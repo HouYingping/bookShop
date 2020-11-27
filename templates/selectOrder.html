@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>交易记录</title>
+<!--		<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">-->
+<!--		<script src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script>-->
+<!--		<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+			    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+				<script src="../static/js/jquery-3.5.1.js"></script>
+				<script src="../static/js/bootstrap.min.js"></script>
+                <link rel="stylesheet" href="../static/css/search.css">
+
+
+		<style>
+		th,td{
+				text-align: center;
+				vertical-align: middle!important;
+			}
+
+
+		</style>
+	</head>
+		<body style="width: 2000px;">
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid" style="background-color: #3c3c3c">
+        <div class="navbar-header" style="margin-left: 5%">
+            <a class="navbar-brand" href="/">书 &nbsp;&nbsp; 之 &nbsp;&nbsp;  海</a>
+            <img src="../static/images/user.png" style="height: 50px;width: 50px;">
+        </div>
+        <div style="margin-left: 65%">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
+                        {% if login_user %}
+                            {{ login_user }}
+                        {% else %}
+                            未登录
+                        {% endif %}
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/login/">登录</a></li>
+                        <li><a href="/register/">注册</a></li>
+                        <li><a href="/showUser/">个人中心</a></li>
+                        <li><a href="/selectAddr/">收货地址</a></li>
+                        <li><a href="/logout/">登出</a></li>
+                    </ul>
+                </li>
+                <li><a href="/">首页</a></li>
+                <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        我的商品
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/addBook/">出售商品</a></li>
+                        <li><a href="/sellerSelectBook/">正在出售</a></li>
+                    </ul>
+                </li>
+                <li><a href="/selectClt/">我的收藏</a></li>
+                <li><a href="/selectCar/">我的购物车</a></li>
+                <li><a href="/selectOrder/">我的订单</a></li>
+            </ul>
+        </div>
+    </div>
+
+</nav>
+<div class="container" style="margin-top: 20px;">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<p style="margin: 0 auto; text-align: center;font-size: 30px;"><strong>订单记录</strong></p>
+				<hr style="border: none; height: 1px; background-color:#66757E;"/>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>订单ID</th>
+						<th style="width: 15%;">商家</th>
+						<th>商品</th>
+						<th>金额</th>
+						<th>时间</th>
+						<th>状态</th>
+						<th style="width: 20%;">操作</th>
+                        <td style="display: none"></td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in allOrder%}
+                        {% for it in orderdata %}
+                            {% ifequal it.order_id i.order_id %}
+                            <tr>
+                                <td>{{ i.order_id }}</td>
+                                <td>{% for j in userdata %}
+                                    {% ifequal it.seller_id j.user_id %}
+                                        <a href="/showSeller/?userid={{ j.user_id }}">{{ j.user_name }}</a>
+                                {% endifequal %}
+                                {% endfor %}
+                                </td>
+                                <td><a href="/showDetails/?order_id={{ i.order_id }}&orderby_id={{ it.orderby_id }}"><img src="{% for j in bookdata %}{% ifequal it.book_id j.book_id %}{{ MEDIA_URL }}{{ j.book_img }}{% endifequal %}{% endfor %}" style="width:75px;height: 75px;" onclick="details()"/></a></td>
+                                <td>{{ it.orderby_price }}</td>
+                                <td>{{ i.order_time }}</td>
+                                {#未支付#}
+                                {% if it.orderby_pay_status == 1 %}
+                                <td>
+                                    <label>待支付</label>
+                                </td>
+                                <td >
+                                    <button class="btn btn-success" onclick="pay(this)">确认支付</button>
+                                    <button class="btn btn-warning" onclick="cel(this)">取消订单</button>
+                                </td>
+                                {% elif it.orderby_pay_status == 2 %}
+                                <td>
+                                    <label>取消支付</label>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger" style="width: 83px;" onclick="del(this)">删除</button>
+                                </td>
+                                {% elif it.orderby_pay_status == 3 %}
+                                <td>
+                                    <label>支付超时</label>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger" style="width: 83px;" onclick="del(this)">删除</button>
+                                </td>
+                                {% elif it.orderby_pay_status == 4 %}
+                                <td>
+                                    <label>未发货</label>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="pull(this)">申请退款</button>
+                                </td>
+                                {% elif it.orderby_pay_status == 5 %}
+                                <td>
+                                    <label>未收货</label>
+                                </td>
+                                <td>
+                                    <button class="btn btn-info" onclick="recv(this)">确认收货</button>
+                                </td>
+                                {% elif it.orderby_pay_status == 6 %}
+                                <td>
+                                    <label>已收货</label>
+                                </td>
+                                <td>
+                                    <button class="btn btn-default" style="width: 83px;"><a href="/addComment/?orderbyid={{ it.orderby_id }}">待评论</a></button>
+                                    <button class="btn btn-danger" style="width: 83px;" onclick="del(this)">删除</button>
+                                </td>
+                                {% elif it.orderby_pay_status == 7 %}
+                                <td>
+                                    <label>申请退款中</label>
+                                </td>
+                                <td>
+                                    <label>退款处理中</label>
+                                </td>
+                                {% elif it.orderby_pay_status == 8 %}
+                                <td>
+                                    <label>已退款</label>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger" style="width: 83px;" onclick="del(this)">删除</button>
+                                </td>
+                                {% endif %}
+                                <td style="display: none">{{ it.orderby_id }}</td>
+                            </tr>
+                            {% endifequal %}
+                        {% endfor %}
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+	</body>
+	<script>
+		function send(code,orderby_id){
+			$.ajax({
+				type:"post",
+				url:"/updateOrderStatus/",
+				async:true,
+				data:{"code":code,"orderby_id":orderby_id},
+				success:function(res){
+				    if(res=="ok"){
+				        window.location.reload();
+                    }
+                }
+			});
+		}
+		function recv(e){
+			orderby_id = $(e).parent().parent().children("td").last().text();
+			send(6,orderby_id);
+		}
+		function del(e){
+			orderby_id = $(e).parent().parent().children("td").last().text();
+			order_id = $(e).parent().parent().children("td").first().text();
+			console.log(order_id,orderby_id);
+			$.ajax({
+				type:"post",
+				url:"/delOrder/",
+				async:true,
+				data:{"orderby_id":orderby_id,"order_id":order_id},
+				success:function(res){
+					if(res=='ok'){
+						$(e).parent().parent().remove();
+					}
+				}
+			});
+		}
+		function cel(e){
+			orderby_id = $(e).parent().parent().children("td").last().text();
+			send(2,orderby_id);
+		}
+		function pull(e){
+			orderby_id = $(e).parent().parent().children("td").last().text();
+			send(7,orderby_id);
+		}
+		function pay(e){
+			orderby_id = $(e).parent().parent().children("td").last().text();
+			console.log(orderby_id);
+			send(4,orderby_id);
+		}
+		function details(e){
+			
+		}
+	</script>
+</html>

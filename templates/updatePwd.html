@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>忘记密码</title>
+<link type="text/css" rel="stylesheet" href="../static/css/password.css" />
+<script type="text/javascript" src="../static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+	var height=$(document).height();
+	$('.main').css('height',height);
+})
+
+function send(){
+    tel = $("input[name='usertel']");
+    $.ajax({
+        type:"post",
+        url:"/getcode/",
+        async:true,
+        data:{'usertel':tel.val()}
+    });
+}
+</script>
+
+
+
+</head>
+
+<body>
+<form method="post" action="/updatePwd/">
+<div class="main">
+  <div class="main0" >
+     <div class="formBox">
+       <h3 style="margin-left: -50px;">登录密码重置</h3>
+       <div class="itembox" style="margin-top: -10px;">
+         <label>手机号&nbsp;:</label>
+         <input name="usertel" type="text" placeholder="请输入手机号"></span>
+       </div>
+       <div class="itembox">
+         <label>验证码&nbsp;:</label>
+         <input name="checkcode" type="text" placeholder="请输入验证码"></span>
+       <button name='getcode' type="button" onclick="send()" style="text-align: center;margin-top: 10px;">获取验证码</button>
+       </div>
+       <div class="itembox">
+         <label>密码&nbsp;:</label>
+         <input name="userpwd1" type="text" placeholder="请输入密码"></span>
+       </div>
+       <div class="itembox">
+         <label>确认密码&nbsp;:</label>
+         <input name="userpwd2" type="text" placeholder="请再次输入密码"></span>
+       </div>
+       <div class="btnBox">
+            <button type="submit" style="margin-left: 40px;">修改密码</button>
+       </div>
+         {{ message }}
+     </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer0">
+     <div class="footer_l">使用条款 | 隐私保护</div>
+     <div class="footer_r">© 2020 （朱元庆）图书信息服务有限公司    苏ICP备0000000号</div>
+  </div> 
+</div>
+</form>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>注册</title>
+<link type="text/css" rel="stylesheet" href="../static/css/zhuce.css" />
+<script type="text/javascript" src="../static/js/jquery-3.5.1.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+	var height=$(document).height();
+	$('.main').css('height',height);
+});
+
+function send(){
+    tel = $("input[name='usertel']");
+    $.ajax({
+        type:"post",
+        url:"/getcode/",
+        async:true,
+        data:{'usertel':tel.val()}
+    });
+}
+</script>
+
+</head>
+
+<body>
+<form id="form" action="/register/" method="post" style="margin-top: -100px;">
+<div class="main">
+  <div class="main0">
+     <div class="main_left">
+        <img src="../static/images/zhuce-image-3.png" class="theimg"/>
+        <img src="../static/images/zhuce-image-2.png" class="secimg"/>
+        <img src="../static/images/zhuce-image-1.png" class="firimg"/>
+     </div>
+     <div class="main_right" style="margin-top: -70px;">
+        <div class="main_r_up">
+            <img src="../static/images/user.png" style="width: 50px;height: 50px;margin-top: 50px;"/>
+            <div class="pp" style="margin-top: 50px;">注册</div>
+        </div>
+        <div class="sub"><p>已经注册？<a href="/login/"><span class="blue">请登录</span></a></p></div>
+        <div class="txt">
+            <span style="letter-spacing:10px;">用户名:</span>
+            <input name="username" type="text" class="txtphone" placeholder="请输入用户名" style="margin-left: -5px;"/>
+        </div>
+         <div class="txt">
+            <span style="letter-spacing:10px;">密&nbsp;码:&nbsp;</span>
+            <input name="password" type="password" class="txtphone" placeholder="请输入密码" style="margin-left: -8px;"/>
+        </div>
+         <div class="txt">
+            <span style="letter-spacing:10px;">手机号:</span>
+            <input id="tel" name="usertel" type="text" class="txtphone" placeholder="请输入手机号" style="margin-left: -5px;"/>
+        </div>
+         <div class="txt">
+            <span style="letter-spacing:10px;">邮&nbsp;箱:&nbsp;</span>
+            <input id="email" name="useremail" type="text" class="txtphone" placeholder="请输入邮箱" style="margin-left: -8px;"/>
+        </div>
+        <div class="txt">
+            <span style=" float:left;letter-spacing:10px;">验证码:</span>
+            <input name="checkcode" type="text" class="txtyzm" placeholder="请短信输入验证码" style="margin-left: -5px;"/>
+            <button name='getcode' type="button" onclick="send()" style="margin-top: 10px;margin-left: 10px;">获取验证码</button>
+        </div>
+        <div class="xieyi">
+            <input name="" type="checkbox" value="" checked="checked"/>
+            我已经阅读并遵守 <span class="blue" style="cursor:pointer">《光子金融服务协议》</span>
+        </div>
+         <div style="margin-left: 100px;">
+        <button id="ok" type="button" style="text-align: center;width: 100px;height: 30px;color: black;background-color: gainsboro" onclick="test()" >注册</button>
+{#             <span id="error" style="color: red">{{ register_error }}</span>#}
+         </div>
+     </div>
+  </div>
+</div>
+</form>
+<div class="footer">
+  <div class="footer0">
+     <div class="footer_l">使用条款 | 隐私保护</div>
+     <div class="footer_r">© 2020 （朱元庆）图书信息服务有限公司    苏ICP备0000000号</div>
+  </div>
+</div>
+<script type="text/javascript">
+var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+    reg2 = /^1[358][0-9]{9}$/;
+    function test() {
+        if(!reg2.test($("#tel").val())){
+            alert("手机号格式不正确！！");
+        }else if(!reg.test($("#email").val())){
+            alert("邮箱格式不正确！！");
+        }else if(!$("input[name='checkcode']").val()) {
+            alert("请填入验证码！")
+        }else{
+            $("#form").submit();
+        }
+    }
+
+
+
+</script>
+</body>
+</html>

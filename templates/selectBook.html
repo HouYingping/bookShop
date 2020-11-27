@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ReadMore图书分类</title>
+        <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+        <script src="../static/js/jquery.min.js"></script>
+        <script src="../static/js/bootstrap.min.js"></script>
+        <link href="../static/css/search.css" rel="stylesheet" />
+    <style>
+        .search_form{
+        width:802px;
+        height:42px;
+    }
+    /*左边输入框设置样式*/
+    .input_text{
+        width:600px;
+        height: 40px;
+        border:1px solid green;
+        /*清除掉默认的padding*/
+        padding:0px;
+        /*提示字首行缩进*/
+        text-indent: 10px;
+        /*去掉蓝色高亮框*/
+        outline: none;
+        /*用浮动解决内联元素错位及小间距的问题*/
+        float:left;
+    }
+    .input_sub{
+        width:100px;
+        height: 42px;
+        background: green;
+        /*去掉submit按钮默认边框*/
+        border:0px;
+        /*改成右浮动也是可以的*/
+        float:left;
+        color:white;/*搜索的字体颜色为白色*/
+        cursor:pointer;/*鼠标变为小手*/
+    }
+
+        hr{
+            width: 1000px;
+            height: 1px;
+            background-color: black;
+            float: left;
+
+        }
+        img{
+            float: left;
+            width: 150px;
+            height: 150px;
+            margin-right: 20px;
+        }
+        .page{
+            text-align: center;
+            font-size: 14px;
+            font-family: 微软雅黑;
+
+        }
+        .page a{
+            display: inline-block;padding: 8px 12px;
+            border: 1px solid #e6e6e6;
+            border-radius: 2px;
+            color: #333333;
+            text-decoration: none;
+            margin-top: 2%;
+
+        }
+        .page span{
+            margin-right: 12px;
+        }
+        .page a:hover,.page .on {
+            background: #1db69a;
+            color: #ffffff;
+            border: 1px solid #1db69a;
+
+        }
+
+    </style>
+    <script>
+
+        function choose(book_id) {
+        $('#myModal').modal();
+        $("#book_id").val(book_id)
+    }
+    </script>
+
+</head>
+<body style="width: 2000px;">
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid" style="background-color: #3c3c3c">
+        <div class="navbar-header" style="margin-left: 5%">
+            <a class="navbar-brand" href="/">书 &nbsp;&nbsp; 之 &nbsp;&nbsp;  海</a>
+            <img src="../static/images/user.png" style="height: 50px;width: 50px;">
+        </div>
+        <div style="margin-left: 65%">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
+                        {% if login_user %}
+                            {{ login_user }}
+                        {% else %}
+                            未登录
+                        {% endif %}
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/login/">登录</a></li>
+                        <li><a href="/register/">注册</a></li>
+                        <li><a href="/showUser/">个人中心</a></li>
+                        <li><a href="/selectAddr/">收货地址</a></li>
+                        <li><a href="/logout/">登出</a></li>
+                    </ul>
+                </li>
+                <li><a href="/">首页</a></li>
+                <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        我的商品
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/addBook/">出售商品</a></li>
+                        <li><a href="/sellerSelectBook/">正在出售</a></li>
+                    </ul>
+                </li>
+                <li><a href="/selectClt/">我的收藏</a></li>
+                <li><a href="/selectCar/">我的购物车</a></li>
+                <li><a href="/selectOrder/">我的订单</a></li>
+            </ul>
+        </div>
+    </div>
+
+</nav>
+<div style="background-color: rgba(248,255,0,0.23) ;height: 80px;margin-top: -18px;">
+    <div style="margin-left: 200px;display: inline;font-size: 20px;font-family: 仿宋;font-weight: 700;"><br>
+        <span style="margin-left: 200px;">
+        书到用时方恨少,事非经过不知难
+        </span><img src="../static/images/book.jpg" style="width: 70px;height: 70px;margin-top: -25px;">
+    </div>
+    <div style="display: inline;">
+    <form method="post" action="/selectBook/" class="search_form" style="float: right;margin-right: 360px;margin-top: -10px;">
+        <input type="text" name="selectname" class="input_text" placeholder="请输入搜索内容">
+        <input type="submit" value="搜索" class="input_sub">
+    </form>
+    </div>
+{#  待填入#}
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+
+         <form action="/addOrder/" method="post">
+	    <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					确认地址
+				</h4>
+			</div>
+			<div style="text-align:center;">
+                <input name="bookid" id="book_id" style="display: none"/>
+				<span>选择地址：</span>
+                <select name="addrid" class="form-control-static">
+                    <option value="选择地址" disabled="disabled" selected="selected">收货地址</option>
+                    {% for i in addrdata %}
+                        <option name="addrid" value="{{ i.addr_id }}">{{ i.addr_name }}&nbsp;{{ i.addr_addr }}&nbsp;{{ i.addr_tel }}</option>
+                    {% endfor %}
+                </select>
+                <div>
+                    <button type="button" class="btn btn-default" onclick="minus(this)">-</button>
+                    <input name="count" value="1" class="" style="width: 30px"/>
+                    <button type="button" class="btn btn-default" onclick="add(this)">+</button>
+                </div>
+			</div>
+
+			<div class="modal-footer">
+                <button type="submit" class="btn btn-primary"  onclick="choose({{ data.book_id }})">确认购买</button>
+                <a href="/selectAddr/">添加地址</a>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消购买</button>
+
+			</div>
+
+
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+         </form>
+
+</div>
+</div>
+
+<div class="tabbable" id="tabs-10519" style="width: 1200px;margin-left: 400px;">
+                    <ul class="nav nav-tabs">
+                         <li class="active">
+                             <a href="/showBook/" style="font-size: 30px;">全部图书</a>
+                        </li>
+                        <li>
+                             <a href="/selectBookItem/?selecttype=文学艺术" style="font-size: 25px;font-family: 微軟正黑體">文学艺术</a>
+                        </li>
+
+                        <li>
+                             <a href="/selectBookItem/?selecttype=小说传记" style="font-size: 25px;font-family: 微軟正黑體">小说传记</a>
+                        </li>
+
+                        <li>
+                             <a href="/selectBookItem/?selecttype=人文社科" style="font-size: 25px;font-family: 微軟正黑體">人文社科</a>
+                        </li>
+
+                        <li>
+                             <a href="/selectBookItem/?selecttype=经济管理" style="font-size: 25px;font-family: 微軟正黑體">经济管理</a>
+                        </li>
+
+                        <li>
+                             <a href="/selectBookItem/?selecttype=科学技术" style="font-size: 25px;font-family: 微軟正黑體">科学技术</a>
+                        </li>
+
+                        <li>
+                             <a href="/selectBookItem/?selecttype=教育考试" style="font-size: 25px;font-family: 微軟正黑體">教育考试</a>
+                        </li>
+
+                        <li>
+                             <a href="/selectBookItem/?selecttype=儿童读物" style="font-size: 25px;font-family: 微軟正黑體">儿童读物</a>
+                        </li>
+                    </ul>
+<div class="tab-content">
+<div class="tab-pane active" id="panel-653227">
+     {% for i in data %}
+    <div class="col-sm-6 col-md-3" style="width: 190px;height: 300px;">
+        <a href="/book/?book_id={{ i.book_id }}" class="thumbnail" style="height: 180px;margin-top: 10px;">
+            <img src="{{ MEDIA_URL }}{{ i.book_img }}" style="height: 180px;width: 145px; " title="{{ i.book_decription }}">
+        </a>
+        <div class="caption">
+            <h3 style="font-size: 15px;text-align: center;" ><strong >{{ i.book_name }}</strong></h3>
+            <p style="color: #b30025; text-align: center;"><strong>{{ i.book_price }}￥</strong></p>
+            <p style="text-align: center;">
+
+                <a href="/addCar/?bookid={{ i.book_id }}" class="btn btn-default" role="button">
+                    查看
+                </a>
+            </p>
+        </div>
+    </div>
+     {% endfor %}
+    </div>
+</div>
+</div>
+
+
+</body>
+</html>
+
+

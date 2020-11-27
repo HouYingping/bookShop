@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$USER_HOME$/PycharmProjects/Wplay/.idea/Wplay.iml" filepath="$USER_HOME$/PycharmProjects/Wplay/.idea/Wplay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/bookShop.iml" filepath="$PROJECT_DIR$/.idea/bookShop.iml" />
+      <module fileurl="file://$USER_HOME$/PycharmProjects/机器学习/.idea/机器学习.iml" filepath="$USER_HOME$/PycharmProjects/机器学习/.idea/机器学习.iml" />
+      <module fileurl="file://$USER_HOME$/PycharmProjects/练习/.idea/练习.iml" filepath="$USER_HOME$/PycharmProjects/练习/.idea/练习.iml" />
+    </modules>
+  </component>
+</project>
